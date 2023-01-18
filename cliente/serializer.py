@@ -7,7 +7,7 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = (
             "nome",
-            "data_de_nascimento"
+            "data_de_nascimento",
             "email",
             "email_verified_at",
             "password",
@@ -16,7 +16,7 @@ class ClienteSerializer(serializers.ModelSerializer):
             "bairro",
             "numero",
             "complemento",
-            "empresa"
+            "empresa",
         )
 
 

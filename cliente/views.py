@@ -1,8 +1,6 @@
 import datetime
 import json
 import random
-
-import jwt
 import pytz
 import requests
 from django.contrib.auth.hashers import check_password, make_password
@@ -10,11 +8,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-from rest_framework.decorators import (
-    api_view,
-    authentication_classes,
-    permission_classes,
-)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
@@ -23,8 +16,7 @@ from cliente.models import PasswordResets
 from cliente.models import Cliente, Tokens
 from cliente.serializer import ClienteSerializer, TokensSerializer
 from django.contrib.auth import logout, login
-from django.core.mail import EmailMessage
-from django.db.models import Q
+
 # Create your views here.
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -200,7 +192,8 @@ class ViewLogin:
             )
 
     # Função de cadastro de novo usuário
-    @api_view(http_method_names=["POST"])
+    # @api_view(http_method_names=["POST"])
+    @csrf_exempt
     def register(request):
         # Checagem do método da requisição
         if request.method == "POST":
@@ -216,10 +209,12 @@ class ViewLogin:
                     or data["bairro"] == None
                     or data["numero"] == None
                     or data["empresa"] == None
-
                 ):
                     return JsonResponse(
-                        {"success":False,"message": "Falta de preenchimento de campo obrigatório"},
+                        {
+                            "success": False,
+                            "message": "Falta de preenchimento de campo obrigatório",
+                        },
                         status=status.HTTP_412_PRECONDITION_FAILED,
                     )
             except Exception as e:
@@ -229,6 +224,7 @@ class ViewLogin:
             data["password"] = make_password(
                 password=data["password"], salt=None, hasher="pbkdf2_sha256"
             )
+            print("sua mae é minha")
             # Serialização dos dados obtidos do body
             usuario_serializer = ClienteSerializer(
                 data=data, context={"request": request}
@@ -242,6 +238,7 @@ class ViewLogin:
                 )
 
             else:
+                print("AAAAAA")
                 return JsonResponse(
                     usuario_serializer.errors, status=status.HTTP_400_BAD_REQUEST
                 )
