@@ -4,7 +4,6 @@ from empresa.models import Empresa
 
 # Create your models here.
 class Cliente(AbstractBaseUser):
-    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
     username = None
     last_login = None
     USERNAME_FIELD = "email"

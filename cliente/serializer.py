@@ -16,7 +16,6 @@ class ClienteSerializer(serializers.ModelSerializer):
             "bairro",
             "numero",
             "complemento",
-            "empresa",
         )
 
 
