@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from cliente.views import ViewLogin
 from empresa.views import ViewEmpresa
+from produto.views import ViewProduto
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("auth/register_users/", ViewLogin.register),
-    path("auth/login/", ViewLogin.login_user),
-    path("auth/register_empresa/", ViewEmpresa.register),
+    path("login/", ViewLogin.login_user),
+    path("register_users/", ViewLogin.register),
+    path("register_empresa/", ViewEmpresa.register),
+    path("register_produto/", ViewProduto.register),
 ]
