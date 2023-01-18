@@ -29,4 +29,5 @@ urlpatterns = [
     path("register_produto/", ViewProduto.register),
     path("register_pedido/", ViewPedido.register),
     path("register_itens/", ViewItens.register),
+    path("get_pedido/<int:id>/show", ViewPedido.get_pedido_id),
 ]
