@@ -224,7 +224,6 @@ class ViewLogin:
             data["password"] = make_password(
                 password=data["password"], salt=None, hasher="pbkdf2_sha256"
             )
-            print("sua mae é minha")
             # Serialização dos dados obtidos do body
             usuario_serializer = ClienteSerializer(
                 data=data, context={"request": request}
@@ -238,7 +237,6 @@ class ViewLogin:
                 )
 
             else:
-                print("AAAAAA")
                 return JsonResponse(
                     usuario_serializer.errors, status=status.HTTP_400_BAD_REQUEST
                 )
