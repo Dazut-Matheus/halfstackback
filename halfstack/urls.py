@@ -20,4 +20,5 @@ from cliente.views import ViewLogin
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/register_users/", ViewLogin.register),
+    path("auth/login/", ViewLogin.login_user),
 ]

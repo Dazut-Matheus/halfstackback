@@ -257,7 +257,6 @@ class ViewLogin:
 
             # Filtragem do usuário de acordo com o email enviado no body
             instance = Cliente.objects.filter(email=email).first()
-
             # Checagem se o usuário se encontra no banco de dados
             if instance:
 
@@ -270,7 +269,7 @@ class ViewLogin:
                     token = jwt_encode_handler(payload)
 
                     data_token = {}
-                    data_token["user"] = request.user.id
+                    data_token["cliente"] = instance.id
                     data_token["token"] = token
                     data_token["flag"] = True
 
@@ -278,9 +277,10 @@ class ViewLogin:
                         data=data_token, context={"request": request}
                     )
                     # Caso as informações sejam válidas, o usuário será salvo/cadastrado
-                    instance_token = Tokens.objects.filter(user=request.user.id)
-
+                    instance_token = Tokens.objects.filter(cliente=instance.id)
+                    print(instance_token)
                     if tokens_serializer.is_valid():
+                        print(1)
                         if instance_token:
                             instance_token.delete()
                         tokens_serializer.save()
@@ -295,26 +295,14 @@ class ViewLogin:
                         "data": {
                             "user": {
                                 "id": instance.id,
-                                "name": instance.name,
+                                "name": instance.nome,
                                 "email": instance.email,
                                 "email_verified_at": instance.email_verified_at,
-                                "privilege_id": instance.privilege.id,
-                                "fl_status": instance.fl_status,
-                                "created_at": instance.created_at,
-                                "updated_at": instance.updated_at,
-                                "privilege": {
-                                    "id": instance.privilege.id,
-                                    "nm_privilege": instance.privilege.nm_privilege,
-                                    "fl_super_admin": instance.privilege.fl_super_admin,
-                                    "fl_alert": instance.privilege.fl_alert,
-                                    "created_at": instance.privilege.created_at,
-                                    "updated_at": instance.privilege.updated_at,
-                                },
                             },
                             "token": token,
                         },
                     }
-                    login(request, instance)
+                    # login(request, instance)
                     return JsonResponse(response, status=status.HTTP_200_OK)
                 else:
                     return JsonResponse(

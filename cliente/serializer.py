@@ -24,7 +24,7 @@ class TokensSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tokens
         fields = (
-            "user",
+            "cliente",
             "flag",
             "token",
         )

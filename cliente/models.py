@@ -42,7 +42,7 @@ class PasswordResets(models.Model):
 
 class Tokens(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(Cliente, on_delete=models.PROTECT)
+    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
     token = models.CharField(max_length=500)
     flag = models.BooleanField(default=False)
 
