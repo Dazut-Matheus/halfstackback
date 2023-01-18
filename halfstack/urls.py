@@ -18,6 +18,8 @@ from django.urls import path
 from cliente.views import ViewLogin
 from empresa.views import ViewEmpresa
 from produto.views import ViewProduto
+from pedido.views import ViewPedido
+from itens.views import ViewItens
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,4 +27,6 @@ urlpatterns = [
     path("register_users/", ViewLogin.register),
     path("register_empresa/", ViewEmpresa.register),
     path("register_produto/", ViewProduto.register),
+    path("register_pedido/", ViewPedido.register),
+    path("register_itens/", ViewItens.register),
 ]
