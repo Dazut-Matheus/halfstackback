@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from pedido.serializer import PedidoSerializer
 from pedido.models import Pedido
 from itens.models import Itens
+from empresa.models import Empresa
 
 # Create your views here.
 
@@ -58,15 +59,33 @@ class ViewPedido:
     def get_pedido_id(request, id):
         # Checagem do método da requisição
         if request.method == "GET":
-            itens = Itens.objects.filter(pedido=id)
-            print(itens)
+            instance_pedido = Pedido.objects.filter(id=id).first()
+            instance_itens = Itens.objects.filter(pedido=id)
+            instance_empresa = Empresa.objects.filter(
+                id=instance_pedido.empresa.id
+            ).first()
             dict_item = []
-            for item in itens:
+            for item in instance_itens:
                 dict_item.append(
                     {"produto": item.produto.id, "quantidade": item.quantidade}
                 )
             print(dict_item)
-            return JsonResponse({"message": "itens"}, status=status.HTTP_201_CREATED)
+            response = {
+                "pedido": id,
+                "empresa": {
+                    "nome": instance_empresa.nome,
+                    "telefone": instance_empresa.telefone,
+                },
+                "cliente_nome": instance_pedido.cliente_nome,
+                "endereco": {
+                    "cidade": instance_pedido.cidade,
+                    "rua": instance_pedido.rua,
+                    "bairro": instance_pedido.bairro,
+                    "numero": instance_pedido.numero,
+                },
+                "itens": dict_item,
+            }
+            return JsonResponse({"message": response}, status=status.HTTP_201_CREATED)
         else:
             return JsonResponse(
                 {"message": "Método enviado não é um post"},
