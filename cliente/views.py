@@ -278,9 +278,7 @@ class ViewLogin:
                     )
                     # Caso as informações sejam válidas, o usuário será salvo/cadastrado
                     instance_token = Tokens.objects.filter(cliente=instance.id)
-                    print(instance_token)
                     if tokens_serializer.is_valid():
-                        print(1)
                         if instance_token:
                             instance_token.delete()
                         tokens_serializer.save()
