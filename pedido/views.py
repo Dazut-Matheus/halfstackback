@@ -67,7 +67,7 @@ class ViewPedido:
             dict_item = []
             for item in instance_itens:
                 dict_item.append(
-                    {"produto": item.produto.id, "quantidade": item.quantidade}
+                    {"produto": item.produto.nome, "quantidade": item.quantidade}
                 )
             print(dict_item)
             response = {
