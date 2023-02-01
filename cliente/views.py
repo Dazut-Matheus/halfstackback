@@ -332,7 +332,6 @@ class ViewLogin:
     def del_user(request):
         if request.method == "DELETE":
             cliente = Cliente.objects.filter(id=request.user.id).first()
-            print(cliente)
             if cliente:
                 cliente.delete()
             else:
