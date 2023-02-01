@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from empresa.models import Empresa
+from django.contrib.auth.models import UserManager
 
 # Create your models here.
 class Cliente(AbstractBaseUser):
@@ -19,6 +20,8 @@ class Cliente(AbstractBaseUser):
     bairro = models.CharField(max_length=50)
     numero = models.CharField(max_length=10)
     complemento = models.CharField(max_length=50, null=True, blank=True)
+
+    objects = UserManager()
 
     def __str__(self):
         return str(self.id)
@@ -41,7 +44,7 @@ class PasswordResets(models.Model):
 
 class Tokens(models.Model):
     id = models.BigAutoField(primary_key=True)
-    cliente = models.ForeignKey(Cliente, on_delete=models.PROTECT)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     token = models.CharField(max_length=500)
     flag = models.BooleanField(default=False)
 

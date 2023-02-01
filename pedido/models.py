@@ -1,9 +1,10 @@
 from django.db import models
 from empresa.models import Empresa
+
 # Create your models here.
 class Pedido(models.Model):
     id = models.BigAutoField(primary_key=True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.PROTECT)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
     cliente_nome = models.CharField(max_length=100)
     cidade = models.CharField(max_length=50)
     rua = models.CharField(max_length=50)

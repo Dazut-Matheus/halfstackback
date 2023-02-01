@@ -16,6 +16,13 @@ from cliente.models import PasswordResets
 from cliente.models import Cliente, Tokens
 from cliente.serializer import ClienteSerializer, TokensSerializer
 from django.contrib.auth import logout, login
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Create your views here.
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -57,7 +64,7 @@ class ViewLogin:
                 to=[email],
                 body=text_body,
             )
-            msg.send()
+            # msg.send()
 
             # https://docs.djangoproject.com/en/4.1/topics/email/
             json_ = {"token": hash, "created_at": created_at, "email": email}
@@ -159,18 +166,19 @@ class ViewLogin:
         if request.method == "POST":
             try:
                 data = json.loads(request.body)
-                if data["token"] == None:
+                print(data.keys())
+                if not "token" in data.keys():
                     return JsonResponse(
                         {"message": "Falta de token"},
                         status=status.HTTP_412_PRECONDITION_FAILED,
                     )
-
+                print("AAAAAAAAAAAAAAAa")
             except Exception as e:
                 print(e)
             # Formação do header e requisição da api de formação do novo token apartir do refresh
             headers = {"Content-type": "application/json", "Accept": "application/json"}
             requisicao = requests.post(
-                "http://127.0.0.1:8000/api-token-refresh/",
+                "http://127.0.0.1:5000/api-token-refresh/",
                 json={"token": data["token"]},
                 headers=headers,
             )
@@ -315,5 +323,29 @@ class ViewLogin:
         else:
             return JsonResponse(
                 {"sucess": False, "message": "Método enviado não é um post"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
+
+    @api_view(http_method_names=["DELETE"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def del_user(request):
+        if request.method == "DELETE":
+            cliente = Cliente.objects.filter(id=request.user.id).first()
+            print(cliente)
+            if cliente:
+                cliente.delete()
+            else:
+                return JsonResponse(
+                    {"success": False, "message": "Cliete não encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            return JsonResponse(
+                {"success": True, "message": "Cliete excluído"},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Método enviado não é um DELETE"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
