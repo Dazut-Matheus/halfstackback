@@ -93,3 +93,26 @@ class ViewEmpresa:
                 {"success": False, "message": "Método enviado não é um GET"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
+
+    @api_view(http_method_names=["DELETE"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def delete_empresa(request, id):
+        if request.method == "DELETE":
+            empresa = Empresa.objects.filter(id=id).first()
+            if empresa:
+                empresa.delete()
+                return JsonResponse(
+                    {"success": True, "message": "Empresa deleteda!"},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return JsonResponse(
+                    {"success": False, "message": "Empresa não encontrada!"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Método enviado não é um DELETE"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
