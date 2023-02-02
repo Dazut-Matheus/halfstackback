@@ -379,3 +379,59 @@ class ViewLogin:
                 {"success": False, "message": "Método enviado não é um GET"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
+
+    @api_view(http_method_names=["PUT"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def put_user_id(request, id):
+        # Checagem do método da requisição
+        cliente = Cliente.objects.filter(id=id).first()
+        if not cliente:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Cliente não encontrado",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        if request.method == "PUT":
+            try:
+                data = json.loads(request.body)
+                if (
+                    data["nome"] == None
+                    or data["email"] == None
+                    or data["password"] == None
+                    or data["data_de_nascimento"] == None
+                    or data["cidade"] == None
+                    or data["rua"] == None
+                    or data["bairro"] == None
+                    or data["numero"] == None
+                    or data["empresa"] == None
+                ):
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": "Falta de preenchimento de campo obrigatório",
+                        },
+                        status=status.HTTP_412_PRECONDITION_FAILED,
+                    )
+            except Exception as e:
+                print(e)
+            cliente.nome = data["nome"]
+            cliente.email = data["email"]
+            cliente.password = data["password"]
+            cliente.data_de_nascimento = data["data_de_nascimento"]
+            cliente.cidade = data["cidade"]
+            cliente.rua = data["rua"]
+            cliente.bairro = data["bairro"]
+            cliente.numero = data["numero"]
+            cliente.empresa = data["empresa"]
+            cliente.save()
+            return JsonResponse(
+                {"message": "Cliente Atualizado!"}, status=status.HTTP_201_CREATED
+            )
+        else:
+            return JsonResponse(
+                {"message": "Método enviado não é um put"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )

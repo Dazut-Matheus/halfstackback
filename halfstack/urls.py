@@ -34,6 +34,7 @@ urlpatterns = [
     path("delete_user/", ViewLogin.del_user),
     path("register_users/", ViewLogin.register),
     path("get_users/", ViewLogin.get_users),
+    path("put_user/<int:id>/", ViewLogin.put_user_id),
     # Empresa
     path("register_empresa/", ViewEmpresa.register),
     path("get_empresas/", ViewEmpresa.get_empresas),
