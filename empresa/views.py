@@ -5,6 +5,13 @@ from rest_framework import status
 from django.http import JsonResponse
 from empresa.serializer import EmpresaSerializer
 from empresa.models import Empresa
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 # Create your views here.
 
@@ -54,5 +61,35 @@ class ViewEmpresa:
         else:
             return JsonResponse(
                 {"message": "Método enviado não é um post"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
+
+    @api_view(http_method_names=["GET"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def get_empresas(request):
+        if request.method == "GET":
+            empresas = Empresa.objects.all()
+            list_ = []
+            for empresa in empresas:
+                dict_ = {
+                    "id": empresa.id,
+                    "nome": empresa.nome,
+                    "cnpj": empresa.cnpj,
+                    "telefone": empresa.telefone,
+                    "cidade": empresa.cidade,
+                    "rua": empresa.rua,
+                    "bairro": empresa.bairro,
+                    "numero": empresa.numero,
+                    "complemento": empresa.complemento,
+                }
+                list_.append(dict_)
+            return JsonResponse(
+                {"success": True, "message": list_},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Método enviado não é um GET"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )

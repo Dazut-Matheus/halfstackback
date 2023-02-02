@@ -348,3 +348,34 @@ class ViewLogin:
                 {"success": False, "message": "Método enviado não é um DELETE"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
+
+    @api_view(http_method_names=["GET"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def get_users(request):
+        if request.method == "GET":
+            clientes = Cliente.objects.all()
+            list_ = []
+            for cliente in clientes:
+                dict_ = {
+                    "id": cliente.id,
+                    "nome": cliente.nome,
+                    "data_de_nascimento": cliente.data_de_nascimento,
+                    "email": cliente.email,
+                    "email_verified_at": cliente.email_verified_at,
+                    "cidade": cliente.cidade,
+                    "rua": cliente.rua,
+                    "bairro": cliente.bairro,
+                    "numero": cliente.numero,
+                    "complemento": cliente.complemento,
+                }
+                list_.append(dict_)
+            return JsonResponse(
+                {"success": True, "message": list_},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Método enviado não é um GET"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )
