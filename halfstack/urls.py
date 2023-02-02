@@ -38,10 +38,12 @@ urlpatterns = [
     # Empresa
     path("register_empresa/", ViewEmpresa.register),
     path("get_empresas/", ViewEmpresa.get_empresas),
+    path("busca_empresa_bairro/", ViewEmpresa.busca_bairro),
     path("delete_empresa/<int:id>/", ViewEmpresa.delete_empresa),
     # Produto
     path("register_produto/", ViewProduto.register),
     path("get_produto_empresa/<int:id>/show", ViewProduto.get_produto_empresa),
+    path("busca_produto_preco/", ViewProduto.busca_produto_preco),
     # Pedido
     path("register_pedido/", ViewPedido.register),
     path("get_pedido/<int:id>/show", ViewPedido.get_pedido_id),

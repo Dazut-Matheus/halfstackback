@@ -116,3 +116,50 @@ class ViewEmpresa:
                 {"success": False, "message": "Método enviado não é um DELETE"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
+
+    @api_view(http_method_names=["POST"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def busca_bairro(request):
+        # Checagem do método da requisição
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                if not "bairro" in data.keys():
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": "Falta de preenchimento de campo obrigatório",
+                        },
+                        status=status.HTTP_412_PRECONDITION_FAILED,
+                    )
+            except Exception as e:
+                print(e)
+            # if data["bairro"] == "":
+            #     empresas = Empresa.objects.all()
+            # else:
+            #     empresas = Empresa.objects.filter(bairro=data["bairro"])
+            empresas = Empresa.objects.filter(bairro=data["bairro"])
+            list_ = []
+            for empresa in empresas:
+                dict_ = {
+                    "id": empresa.id,
+                    "nome": empresa.nome,
+                    "cnpj": empresa.cnpj,
+                    "telefone": empresa.telefone,
+                    "cidade": empresa.cidade,
+                    "rua": empresa.rua,
+                    "bairro": empresa.bairro,
+                    "numero": empresa.numero,
+                    "complemento": empresa.complemento,
+                }
+                list_.append(dict_)
+            return JsonResponse(
+                {"success": True, "message": list_},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Método enviado não é um POST"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )

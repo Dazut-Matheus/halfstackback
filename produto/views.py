@@ -117,3 +117,51 @@ class ViewProduto:
                 {"message": "Método enviado não é um post"},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
+
+    @api_view(http_method_names=["POST"])
+    @authentication_classes([JSONWebTokenAuthentication])
+    @permission_classes([IsAuthenticated])
+    def busca_produto_preco(request):
+        # Checagem do método da requisição
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                if not "max" in data.key or not "min" in data.key:
+
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": "Falta de preenchimento de campo obrigatório",
+                        },
+                        status=status.HTTP_412_PRECONDITION_FAILED,
+                    )
+            except Exception as e:
+                print(e)
+            # Serialização dos dados obtidos do body
+            produtos = Produto.objects.filter(
+                valor__gte=data["min"], valor__lte=data["max"]
+            )
+            dict_prod = []
+            for item in produtos:
+                dict_prod.append(
+                    {
+                        "id": item.id,
+                        "empresa": item.empresa.nome,
+                        "produto": item.nome,
+                        "descricao": item.descricao,
+                        "valor": item.valor,
+                    }
+                )
+            # print(dict_prod)
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": dict_prod,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        else:
+            return JsonResponse(
+                {"message": "Método enviado não é um post"},
+                status=status.HTTP_405_METHOD_NOT_ALLOWED,
+            )

@@ -417,9 +417,12 @@ class ViewLogin:
                     )
             except Exception as e:
                 print(e)
+
             cliente.nome = data["nome"]
             cliente.email = data["email"]
-            cliente.password = data["password"]
+            cliente.password = make_password(
+                password=data["password"], salt=None, hasher="pbkdf2_sha256"
+            )
             cliente.data_de_nascimento = data["data_de_nascimento"]
             cliente.cidade = data["cidade"]
             cliente.rua = data["rua"]
