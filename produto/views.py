@@ -126,7 +126,7 @@ class ViewProduto:
         if request.method == "POST":
             try:
                 data = json.loads(request.body)
-                if not "max" in data.key or not "min" in data.key:
+                if not "max" in data.keys() or not "min" in data.keys():
 
                     return JsonResponse(
                         {
@@ -138,9 +138,21 @@ class ViewProduto:
             except Exception as e:
                 print(e)
             # Serialização dos dados obtidos do body
-            produtos = Produto.objects.filter(
-                valor__gte=data["min"], valor__lte=data["max"]
-            )
+            if not data["min"] == None and not data["max"] == None:
+                # print(1)
+                produtos = Produto.objects.filter(
+                    valor__gte=data["min"], valor__lte=data["max"]
+                )
+            if not data["min"] == None and data["max"] == None:
+                # print(2)
+                produtos = Produto.objects.filter(valor__gte=data["min"])
+            if data["min"] == None and not data["max"] == None:
+                # print(3)
+                produtos = Produto.objects.filter(valor__lte=data["max"])
+            if data["min"] == None and data["max"] == None:
+                # print(4)
+                produtos = Produto.objects.all()
+
             dict_prod = []
             for item in produtos:
                 dict_prod.append(
