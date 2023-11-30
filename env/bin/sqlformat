@@ -1,4 +1,4 @@
-#!/home/dazut/halfstack/back/halfstackback/env/bin/python
+#!/home/dazut/UFU/ASA/halfstackback/env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

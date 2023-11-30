@@ -1,4 +1,4 @@
-#!/home/dazut/halfstack/back/halfstackback/env/bin/python
+#!/home/dazut/UFU/ASA/halfstackback/env/bin/python
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 
