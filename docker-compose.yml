@@ -1,34 +1,10 @@
-version: '2.1'
-networks:
-  asa-bridge:
-    ipam:
-      config:
-        - subnet: 172.19.0.0/16
-
+version: '3'
 services:
-  projeto_universidade:
+  web:
     build: .
-    depends_on:
-      mysql:
-        condition: service_healthy
-
-  mysql:
-    image: mysql:latest
-    restart: always
-    hostname: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=asa
+    image: ubuntu-ntc
+    command: python3 manage.py runserver 0.0.0.0:5000
     ports:
-      - '3306:3306'
+      - "5000:5000"
     volumes:
-      - ./mysql-data:/var/lib/mysql
-    networks:
-      asa-bridge:
-        ipv4_address: 172.19.0.20
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
+      - .:/app
