@@ -33,7 +33,6 @@ class ViewPedido:
                     or data["rua"] == None
                     or data["bairro"] == None
                     or data["numero"] == None
-                    or data["empresa"] == None
                 ):
                     return JsonResponse(
                         {
@@ -46,12 +45,14 @@ class ViewPedido:
                 print(e)
             # Serialização dos dados obtidos do body
             pedido_serilizer = PedidoSerializer(data=data, context={"request": request})
-
+            # print(pedido_serilizer)
+            # print(pedido_serilizer.data)
             # Caso as informações sejam válidas, o usuário será salvo/cadastrado
             if pedido_serilizer.is_valid():
                 pedido_serilizer.save()
                 return JsonResponse(
-                    {"message": "Pedido Cadastrado"}, status=status.HTTP_201_CREATED
+                    {"message": "Pedido Cadastrado", "data": pedido_serilizer.data},
+                    status=status.HTTP_201_CREATED,
                 )
 
             else:

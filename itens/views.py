@@ -52,8 +52,11 @@ class ViewItens:
                     data["quantidade"] + instance_itens.quantidade
                 )
                 instance_itens.save()
+                itens_serilizer = ItensSerializer(instance_itens)
+
                 return JsonResponse(
-                    {"message": "Item Adicionado"}, status=status.HTTP_201_CREATED
+                    {"message": "Item Adicionado", "data": itens_serilizer.data},
+                    status=status.HTTP_201_CREATED,
                 )
             # print(instance_itens)
             itens_serilizer = ItensSerializer(data=data, context={"request": request})
@@ -62,7 +65,8 @@ class ViewItens:
             if itens_serilizer.is_valid():
                 itens_serilizer.save()
                 return JsonResponse(
-                    {"message": "Item Adicionado"}, status=status.HTTP_201_CREATED
+                    {"message": "Item Adicionado", "data": itens_serilizer.data},
+                    status=status.HTTP_201_CREATED,
                 )
 
             else:

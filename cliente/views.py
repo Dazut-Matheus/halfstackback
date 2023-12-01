@@ -205,28 +205,25 @@ class ViewLogin:
     def register(request):
         # Checagem do método da requisição
         if request.method == "POST":
-            try:
-                data = json.loads(request.body)
-                if (
-                    data["nome"] == None
-                    or data["email"] == None
-                    or data["password"] == None
-                    or data["data_de_nascimento"] == None
-                    or data["cidade"] == None
-                    or data["rua"] == None
-                    or data["bairro"] == None
-                    or data["numero"] == None
-                    or data["empresa"] == None
-                ):
-                    return JsonResponse(
-                        {
-                            "success": False,
-                            "message": "Falta de preenchimento de campo obrigatório",
-                        },
-                        status=status.HTTP_412_PRECONDITION_FAILED,
-                    )
-            except Exception as e:
-                print(e)
+            data = json.loads(request.body)
+            if (
+                data["nome"] == None
+                or data["email"] == None
+                or data["password"] == None
+                or data["data_de_nascimento"] == None
+                or data["cidade"] == None
+                or data["rua"] == None
+                or data["bairro"] == None
+                or data["numero"] == None
+                or data["empresa"] == None
+            ):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Falta de preenchimento de campo obrigatório",
+                    },
+                    status=status.HTTP_412_PRECONDITION_FAILED,
+                )
             data["email_verified_at"] = False
             # Formação da senha encriptada
             data["password"] = make_password(
@@ -267,11 +264,9 @@ class ViewLogin:
             instance = Cliente.objects.filter(email=email).first()
             # Checagem se o usuário se encontra no banco de dados
             if instance:
-
                 # Checagem se a senha inserida corresponde com a salva
                 che = check_password(password=password, encoded=instance.password)
                 if che:
-
                     # Formação do token
                     payload = jwt_payload_handler(instance)
                     token = jwt_encode_handler(payload)

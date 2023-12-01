@@ -1,16 +1,65 @@
-FROM ubuntu
-RUN apt-get update && apt-get install python3-pip -y && apt-get install python3-dev -y
-WORKDIR /tarefa
-COPY halfstack  /tarefa/halfstack/
-COPY pedido  /tarefa/pedido/
-COPY itens /tarefa/itens/
-COPY cliente /tarefa/cliente/
-COPY empresa /tarefa/empresa
-COPY produto /tarefa/produto/
-COPY manage.py /tarefa/
-COPY db.sqlite3 /tarefa/
-COPY requirements.txt /tarefa/
-RUN pip3 install --upgrade pip
-RUN pip3 install -r /tarefa/requirements.txt 
+# (1) sistema operacional Ubuntu-18.04
+FROM ubuntu:22.04
+
+
+# Ajustar para python3.9
+RUN apt update -y; apt upgrade -y
+RUN apt install -y software-properties-common
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-cache policy python3.9
+
+
+# Variaveis de ambientes para tzdata
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
+
+# (2) Instalar as depedencias
+RUN apt update -y; apt install -y \
+    git \
+    build-essential \
+    cmake \
+    libopenblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    libx11-dev \
+    libgtk-3-dev \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    software-properties-common \
+    python3 \
+    python3-dev \
+    python3-pip \
+    python3.9 \
+    python3.9-dev \
+    python3.9-distutils \
+    libmysqlclient-dev \
+    mysql-client
+
+# (3)  Crio o diretorio halfstack e declaro como area de trabalho
+RUN mkdir /halfstack
+WORKDIR /halfstack
+
+# (4) Instalação dos Compiladores
+RUN apt install -y software-properties-common
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN apt update -y; apt install -y gcc g++
+
+# (5) Copio o meu req.txt, adiciono scikit build e req
+COPY req.txt /halfstack/
+
+# RUN python3 -m pip install --upgrade pip
+RUN python3.9 -m pip install scikit-build
+RUN python3.9 -m pip install -r req.txt
+RUN python3.9 -m pip install mysql-connector-python
+
+ADD . .
+
+# Gera o .env
+RUN cd /halfstack
+#RUN cp docker.env ./.env
+#COPY .env ./
+
+## (6) Ao final de tudo, executo o python3 manage.py runserver
 EXPOSE 5000
-CMD ["python3", "manage.py", "runserver", "127.0.0.1:5000"]
+#CMD ["python3.9", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD python3.9 manage.py runserver 0.0.0.0:5000

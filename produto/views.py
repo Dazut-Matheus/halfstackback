@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from empresa.models import Empresa
 
+
 # Create your views here.
 class ViewProduto:
     @api_view(http_method_names=["POST"])
@@ -48,7 +49,8 @@ class ViewProduto:
             if produto_serilizer.is_valid():
                 produto_serilizer.save()
                 return JsonResponse(
-                    {"message": "Produto Cadastrado"}, status=status.HTTP_201_CREATED
+                    {"message": "Produto Cadastrado", "data": produto_serilizer.data},
+                    status=status.HTTP_201_CREATED,
                 )
 
             else:
@@ -127,7 +129,6 @@ class ViewProduto:
             try:
                 data = json.loads(request.body)
                 if not "max" in data.keys() or not "min" in data.keys():
-
                     return JsonResponse(
                         {
                             "success": False,

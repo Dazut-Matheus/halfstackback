@@ -116,7 +116,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "asa",
-        "USER": "user",
+        "USER": "root",
         "PASSWORD": "password",
         "HOST": "0.0.0.0",
         "PORT": "3306",
