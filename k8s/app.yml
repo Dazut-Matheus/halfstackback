@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
         - name: "app"
-          image: app-asa01:1.1
-          imagePullPolicy: Never
+          image: dazut/asa:latest  # Atualize esta linha com o nome do seu usuário e nome da imagem no Docker Hub
+          imagePullPolicy: Always   # Forçar a atualização da imagem sempre que o pod iniciar
           ports:
-            - containerPort: 8000
+            - containerPort: 5000
           env:
             - name: PS_DATABASE_URL
               value: mysql://root:password@127.0.0.1:3306/asa
